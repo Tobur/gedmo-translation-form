@@ -26,6 +26,6 @@ class GedmoTranslationFormExtension extends Extension
      */
     public function getAlias()
     {
-        return 'sonata_generator';
+        return 'gedmo_translation_form';
     }
 }
