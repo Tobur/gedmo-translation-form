@@ -16,6 +16,7 @@ default_locale: ua
 To twig:
 
 ```
-form_themes:
-        - 'Form/translatable.html.twig'
+twig:
+    form_themes:
+            - 'GedmoTranslationFormBundle:Form:translatable.html.twig'
 ```
