@@ -12,6 +12,9 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        return new TreeBuilder();
+        $treeBuilder = new TreeBuilder();
+        $treeBuilder->root('gedmo_translation_form');
+
+        return $treeBuilder;
     }
 }
