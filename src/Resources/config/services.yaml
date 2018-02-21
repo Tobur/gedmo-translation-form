@@ -1,0 +1,10 @@
+services:
+    GedmoTranslationFormBundle\Form\EventListener\TranslationsListener:
+        class: GedmoTranslationFormBundle\Form\EventListener\TranslationsListener
+        arguments:
+          - '%locales%'
+          - '%default_locale%'
+    GedmoTranslationFormBundle\Form\Type\TranslationType:
+        tags:
+            - { name: form.type, alias: translatable }
+
