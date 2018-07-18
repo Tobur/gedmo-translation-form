@@ -17,6 +17,20 @@ To twig:
 
 ```
 twig:
-    form_themes:
-            - 'GedmoTranslationFormBundle:Form:translatable.html.twig'
+  form_themes:
+    - 'GedmoTranslationFormBundle:Form:translatable.html.twig'
+```
+
+How to use in Sonata "configureFormFields":
+
+```
+        $formMapper->add(
+            'name',
+            TranslationType::class,
+            [
+                'type' => TextType::class,
+            ]
+        );
+
+        $formMapper->getFormBuilder()->setData($this->getSubject());
 ```
