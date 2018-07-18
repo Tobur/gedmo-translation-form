@@ -119,7 +119,7 @@ class TranslationsListener implements EventSubscriberInterface
 
             if ($needTranslation === null) {
                 $className = sprintf('%sTranslation', get_class($entity));
-                $vacancyTranslation = new $className($locale, $propertyName, $data);
+                $objectTranslation = new $className($locale, $propertyName, $data);
 
                 if (!method_exists($entity, 'addTranslation')) {
                     throw new InvalidConfigurationException(
@@ -127,8 +127,15 @@ class TranslationsListener implements EventSubscriberInterface
                     );
                 }
 
-                $entity->addTranslation($vacancyTranslation);
-                $vacancyTranslation->setObject($entity);
+                $entity->addTranslation($objectTranslation);
+                $objectTranslation->setObject($entity);
+
+                $method = sprintf('set%s', $objectTranslation->getField());
+
+                if(method_exists($entity, $method) && $this->defaultLocale === $locale) {
+                    $entity->$method($objectTranslation->getContent());
+                }
+
             }
         }
     }
