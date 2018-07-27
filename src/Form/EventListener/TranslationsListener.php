@@ -113,6 +113,8 @@ class TranslationsListener implements EventSubscriberInterface
                 if ($translation->getLocale() === $locale && $translation->getField() === $propertyName) {
                     $needTranslation = $translation;
                     $needTranslation->setContent($data);
+                    $this->setDataToEntity($entity, $needTranslation, $locale);
+
                     break;
                 }
             }
@@ -130,13 +132,22 @@ class TranslationsListener implements EventSubscriberInterface
                 $entity->addTranslation($objectTranslation);
                 $objectTranslation->setObject($entity);
 
-                $method = sprintf('set%s', $objectTranslation->getField());
-
-                if(method_exists($entity, $method) && $this->defaultLocale === $locale) {
-                    $entity->$method($objectTranslation->getContent());
-                }
-
+                $this->setDataToEntity($entity, $objectTranslation, $locale);
             }
+        }
+    }
+
+    /**
+     * @param object $entity
+     * @param object $objectTranslation
+     * @param string $locale
+     */
+    protected function setDataToEntity($entity, $objectTranslation, $locale)
+    {
+        $method = sprintf('set%s', $objectTranslation->getField());
+
+        if(method_exists($entity, $method) && $this->defaultLocale === $locale) {
+            $entity->$method($objectTranslation->getContent());
         }
     }
 }
