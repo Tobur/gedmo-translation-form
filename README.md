@@ -1,3 +1,5 @@
+![How to look like](https://raw.githubusercontent.com/Tobur/gedmo-translation-form/master/how-to-lool-like.png)
+
 Setup:
 
 ```
@@ -34,5 +36,3 @@ How to use in Sonata "configureFormFields":
 
         $formMapper->getFormBuilder()->setData($this->getSubject());
 ```
-
-![How to look like](https://raw.githubusercontent.com/Tobur/gedmo-translation-form/master/how-to-lool-like.png)
