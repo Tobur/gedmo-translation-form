@@ -2,19 +2,27 @@
 
     <ul class="nav nav-tabs" role="tablist">
         {% for child in form %}
-        <li class="nav-item {{ child.vars.attr.is_active_tab ? 'active' : '' }}">
-            <a class="nav-link active" href="#{{ child.vars.attr.unique }}"
-               aria-expanded="{{ child.vars.attr.is_active_tab ? 'true' : 'false' }}"
-               role="tab" data-toggle="tab">{{ child.vars.label }}
-            </a>
-        </li>
+            {%  if child.vars.attr.is_bool == false %}
+                <li class="nav-item {{ child.vars.attr.is_active_tab ? 'active' : '' }}">
+                    <a class="nav-link active" href="#{{ child.vars.attr.unique }}"
+                       aria-expanded="{{ child.vars.attr.is_active_tab ? 'true' : 'false' }}"
+                       role="tab" data-toggle="tab">{{ child.vars.label }}
+                    </a>
+                </li>
+            {% endif %}
         {% endfor %}
     </ul>
     <div class="translatable-fields tab-content">
         {% for child in form %}
-            <div role="tabpanel" class="tab-pane fade in {{ child.vars.attr.is_active_tab ? 'active' : '' }}" id="{{ child.vars.attr.unique }}">
-             {{ form_widget(child) }}
-            </div>
+            {%  if child.vars.attr.is_bool == false %}
+                <div role="tabpanel" class="tab-pane fade in {{ child.vars.attr.is_active_tab ? 'active' : '' }}" id="{{ child.vars.attr.unique }}">
+                    {{ form_widget(child) }}
+                </div>
+            {% else %}
+                <div class="float-left" id="{{ child.vars.attr.unique }}">
+                    {{ form_widget(child) }}
+                </div>
+            {% endif %}
         {% endfor %}
     </div>
 {% endblock %}

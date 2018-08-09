@@ -7,6 +7,7 @@ use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;
 use Gedmo\Translatable\Translatable;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\Exception\InvalidConfigurationException;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 
@@ -75,6 +76,12 @@ class TranslationsListener implements EventSubscriberInterface
 
             $attribute['is_active_tab'] = $locale === $this->defaultLocale ? true : false;
             $attribute['unique'] = uniqid($locale);
+            $attribute['is_bool'] = false;
+
+            if (in_array($options[TranslationType::TYPE], [CheckboxType::class])) {
+                $emptyData = boolval($emptyData);
+                $attribute['is_bool'] = true;
+            }
 
             $form->add(
                 $locale.'_content',
