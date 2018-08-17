@@ -52,6 +52,9 @@ class TranslationsListener implements EventSubscriberInterface
         $form = $event->getForm();
         $options = $form->getConfig()->getOptions();
         $entity = $form->getRoot()->getData();
+        if (empty($entity)) {
+            return false;
+        }
         $propertyName = $form->getPropertyPath()->__toString();
         foreach ($this->locales as $locale) {
             if (!method_exists($entity, 'getTranslations')) {
@@ -107,6 +110,9 @@ class TranslationsListener implements EventSubscriberInterface
     {
         $form = $event->getForm();
         $entity = $form->getRoot()->getData();
+        if (empty($entity)) {
+            return false;
+        }
         $propertyName = $form->getPropertyPath()->__toString();
         foreach ($this->locales as $locale) {
             $data = $form->get($locale . '_content')->getData();
