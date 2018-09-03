@@ -10,6 +10,8 @@ use Symfony\Component\Form\Exception\InvalidConfigurationException;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class TranslationsListener implements EventSubscriberInterface
 {
@@ -24,13 +26,20 @@ class TranslationsListener implements EventSubscriberInterface
     protected $defaultLocale;
 
     /**
+     * @var Request
+     */
+    protected $request;
+
+    /**
+     * @param RequestStack $request
      * @param array $locales
      * @param string $defaultLocale
      */
-    public function __construct(array $locales, $defaultLocale)
+    public function __construct(RequestStack $request, array $locales, $defaultLocale)
     {
         $this->locales = $locales;
         $this->defaultLocale = $defaultLocale;
+        $this->request = $request->getCurrentRequest();
     }
 
     /**
@@ -52,6 +61,9 @@ class TranslationsListener implements EventSubscriberInterface
         $form = $event->getForm();
         $options = $form->getConfig()->getOptions();
         $entity = $form->getRoot()->getData();
+        if (empty($entity)) {
+            return false;
+        }
         $propertyName = $form->getPropertyPath()->__toString();
         foreach ($this->locales as $locale) {
             if (!method_exists($entity, 'getTranslations')) {
@@ -77,7 +89,6 @@ class TranslationsListener implements EventSubscriberInterface
             $attribute['is_active_tab'] = $locale === $this->defaultLocale ? true : false;
             $attribute['unique'] = uniqid($locale);
             $attribute['is_bool'] = false;
-
             if (in_array($options[TranslationType::TYPE], [CheckboxType::class])) {
                 $emptyData = boolval($emptyData);
                 $attribute['is_bool'] = true;
@@ -107,6 +118,9 @@ class TranslationsListener implements EventSubscriberInterface
     {
         $form = $event->getForm();
         $entity = $form->getRoot()->getData();
+        if (empty($entity)) {
+            return false;
+        }
         $propertyName = $form->getPropertyPath()->__toString();
         foreach ($this->locales as $locale) {
             $data = $form->get($locale . '_content')->getData();
@@ -151,9 +165,17 @@ class TranslationsListener implements EventSubscriberInterface
      */
     protected function setDataToEntity($entity, $objectTranslation, $locale)
     {
-        $method = sprintf('set%s', $objectTranslation->getField());
+        $method = sprintf('set%s', ucfirst($objectTranslation->getField()));
 
-        if(method_exists($entity, $method) && $this->defaultLocale === $locale) {
+        $_locale = $this->request->attributes->get('_locale');
+
+        if ($_locale) {
+            if(method_exists($entity, $method) && $_locale === $locale) {
+                $entity->$method($objectTranslation->getContent());
+            }
+
+            return;
+        } else if(method_exists($entity, $method) && $this->defaultLocale === $locale) {
             $entity->$method($objectTranslation->getContent());
         }
     }

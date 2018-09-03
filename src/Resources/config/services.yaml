@@ -14,6 +14,7 @@ services:
     GedmoTranslationFormBundle\Form\EventListener\TranslationsListener:
         class: GedmoTranslationFormBundle\Form\EventListener\TranslationsListener
         arguments:
+          - '@request_stack'
           - '%locales%'
           - '%default_locale%'
     GedmoTranslationFormBundle\Form\Type\TranslationType:
