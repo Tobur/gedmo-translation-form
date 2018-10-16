@@ -30,6 +30,7 @@ How to use in Sonata "configureFormFields":
             'name',
             TranslationType::class,
             [
+                'required_locales' => ['en'],
                 'type' => TextType::class,
             ]
         );

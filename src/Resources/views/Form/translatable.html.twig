@@ -17,10 +17,16 @@
             {%  if child.vars.attr.is_bool == false %}
                 <div role="tabpanel" class="tab-pane fade in {{ child.vars.attr.is_active_tab ? 'active' : '' }}" id="{{ child.vars.attr.unique }}">
                     {{ form_widget(child) }}
+                    <div class="help-block sonata-ba-field-error-messages">
+                        {{ form_errors(child) }}
+                    </div>
                 </div>
             {% else %}
                 <div class="float-left" id="{{ child.vars.attr.unique }}">
                     {{ form_widget(child) }}
+                    <div class="help-block sonata-ba-field-error-messages">
+                        {{ form_errors(child) }}
+                    </div>
                 </div>
             {% endif %}
         {% endfor %}

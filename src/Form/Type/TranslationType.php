@@ -11,6 +11,7 @@ class TranslationType extends AbstractType
 {
     const TYPE = 'type';
     const FIELD_OPTIONS = 'field_options';
+    const REUIRED_LOCALES = 'required_locales';
 
     /**
      * @var TranslationsListener
@@ -42,6 +43,7 @@ class TranslationType extends AbstractType
         $resolver->setDefaults([
             static::TYPE => null,
             static::FIELD_OPTIONS => [],
+            static::REUIRED_LOCALES => [],
             'mapped' => false
         ]);
     }

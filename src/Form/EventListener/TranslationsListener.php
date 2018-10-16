@@ -12,6 +12,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class TranslationsListener implements EventSubscriberInterface
 {
@@ -60,6 +61,7 @@ class TranslationsListener implements EventSubscriberInterface
     {
         $form = $event->getForm();
         $options = $form->getConfig()->getOptions();
+        $requiredLocales = $options[TranslationType::REUIRED_LOCALES];
         $entity = $form->getRoot()->getData();
         if (empty($entity)) {
             return false;
@@ -94,6 +96,11 @@ class TranslationsListener implements EventSubscriberInterface
                 $attribute['is_bool'] = true;
             }
 
+            $constaints = [];
+            if (in_array($locale, $requiredLocales)) {
+                $constaints[] = new NotBlank(['message' => 'Field can\'t be blank!']);
+            }
+
             $form->add(
                 $locale.'_content',
                 $options[TranslationType::TYPE],
@@ -105,7 +112,8 @@ class TranslationsListener implements EventSubscriberInterface
                     $options[TranslationType::FIELD_OPTIONS],
                     [
                         'attr' => $attribute
-                    ]
+                    ],
+                    ['constraints' => $constaints]
                 )
             );
         }
